@@ -122,16 +122,21 @@ function handlePieceSelection(e) {
 
     if (selectedPieces.length === 0) {
         selectedPiece.classList.add('selected');
+        selectedPiece.style.outline = '2px solid rgba(255, 255, 0, 0.7)'; // Highlight color for mobile
         selectedPieces.push(selectedPiece);
     } else if (selectedPieces.length === 1) {
         if (selectedPiece !== selectedPieces[0]) {
             selectedPieces.push(selectedPiece);
             swapPieces(selectedPieces[0], selectedPieces[1]);
             
-            selectedPieces.forEach(piece => piece.classList.remove('selected'));
+            selectedPieces.forEach(piece => {
+                piece.classList.remove('selected');
+                piece.style.outline = ''; // Remove highlight
+            });
             selectedPieces = [];
         } else {
             selectedPiece.classList.remove('selected');
+            selectedPiece.style.outline = ''; // Remove highlight
             selectedPieces = [];
         }
     }
