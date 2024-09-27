@@ -308,9 +308,15 @@ function checkPuzzleArrangement() {
     });
 
     if (isCorrect) {
-        alert("Congratulations! The puzzle has been correctly arranged.");
+        // Display the modal for success
+        const modal = document.getElementById('congrats-modal');
+        const modalMessage = document.getElementById('modal-message');
+        modalMessage.textContent = `Congratulations! You've solved the ${getLevelName(currentLevel)} puzzle!`;
+        modal.style.display = 'flex';
     } else {
+        // Display the failure message in a simple alert
         alert("The puzzle is not arranged correctly. Please try again.");
     }
 }
+
 
