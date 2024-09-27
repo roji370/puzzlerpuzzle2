@@ -5,21 +5,21 @@ const mediumButton = document.getElementById('medium');
 const hardButton = document.getElementById('hard');
 const solveButton = document.getElementById('solve');
 
-let currentLevel = 25;  // Start with the easy level (5x5)
+let currentLevel = 10;  // Start with the easy level
 let puzzleState = [];
 let startTime, intervalId;
 let completedLevels = new Set();
 
 const levelImages = {
-    25: 'images/easy-puzzle.jpg',   // 5x5
-    49: 'images/medium-puzzle.jpg',  // 7x7
-    100: 'images/hard-puzzle.jpg'    // 10x10
+    10: 'images/easy-puzzle.jpg',
+    12: 'images/medium-puzzle.jpg',
+    16: 'images/hard-puzzle.jpg'
 };
 
 window.onload = () => {
-    easyButton.addEventListener('click', () => setupPuzzle(25));
-    mediumButton.addEventListener('click', () => setupPuzzle(49));
-    hardButton.addEventListener('click', () => setupPuzzle(100));
+    easyButton.addEventListener('click', () => setupPuzzle(10));
+    mediumButton.addEventListener('click', () => setupPuzzle(12));
+    hardButton.addEventListener('click', () => setupPuzzle(16));
     document.getElementById('reset').addEventListener('click', resetPuzzle);
     solveButton.addEventListener('click', solvePuzzle);
 
@@ -42,8 +42,8 @@ function saveCompletedLevels() {
 }
 
 function updateButtonStates() {
-    mediumButton.disabled = !completedLevels.has(25);
-    hardButton.disabled = !completedLevels.has(49);
+    mediumButton.disabled = !completedLevels.has(10);
+    hardButton.disabled = !completedLevels.has(12);
     
     // Hide lock icons if levels are unlocked
     document.querySelector('.lock-icon.medium').style.display = mediumButton.disabled ? 'inline-block' : 'none';
@@ -59,7 +59,7 @@ function createPuzzle(level) {
     puzzleContainer.innerHTML = '';
 
     // Set up grid layout based on the level
-    const gridSize = level === 25 ? 5 : (level === 49 ? 7 : 10);  // Adjust grid size based on level
+    const gridSize = level === 10 ? 5 : (level === 12 ? 7 : 9); // 5x5 for Easy, 7x7 for Medium, and 9x9 for Hard
     puzzleContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
     puzzleContainer.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
 
@@ -76,19 +76,16 @@ function createPuzzle(level) {
         puzzlePiece.style.backgroundSize = `${gridSize * 100}% ${gridSize * 100}%`;
         puzzlePiece.style.backgroundPosition = `${(i % gridSize) * 100 / (gridSize - 1)}% ${Math.floor(i / gridSize) * 100 / (gridSize - 1)}%`;
 
+        puzzlePiece.setAttribute('draggable', true);
         puzzlePiece.dataset.correctPosition = i;
 
-        // Use different event listeners for mobile and desktop
-        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-            // Mobile touch events
-            puzzlePiece.addEventListener('touchstart', handlePieceSelection);
-        } else {
-            // Desktop drag events
-            puzzlePiece.setAttribute('draggable', true);
-            puzzlePiece.addEventListener('dragstart', dragStart);
-            puzzlePiece.addEventListener('dragover', dragOver);
-            puzzlePiece.addEventListener('drop', drop);
-        }
+        // Event listeners for drag-and-drop
+        puzzlePiece.addEventListener('dragstart', dragStart);
+        puzzlePiece.addEventListener('dragover', dragOver);
+        puzzlePiece.addEventListener('drop', drop);
+        puzzlePiece.addEventListener('touchstart', touchStart);
+        puzzlePiece.addEventListener('touchmove', touchMove);
+        puzzlePiece.addEventListener('touchend', touchEnd);
 
         puzzleContainer.appendChild(puzzlePiece);
     }
@@ -106,9 +103,9 @@ function scramblePieces() {
     }
 }
 
-// Desktop drag-and-drop handlers
 let draggedPiece;
 
+// Drag-and-drop event handlers for desktop
 function dragStart(e) {
     draggedPiece = e.target;
 }
@@ -123,39 +120,68 @@ function drop(e) {
     checkPuzzleCompletion();
 }
 
-// Mobile touch interaction handlers
-let selectedPieces = [];
+// Mobile touch event handlers
+let startX, startY, targetPiece;
 
-function handlePieceSelection(e) {
+function touchStart(e) {
+    const touch = e.touches[0];
+    draggedPiece = e.target;
+    startX = touch.clientX;
+    startY = touch.clientY;
     e.preventDefault(); // Prevent default touch behaviors
-    const selectedPiece = e.target;
+}
 
-    if (selectedPieces.length === 0) {
-        // First piece selection
-        selectedPiece.classList.add('selected');
-        selectedPieces.push(selectedPiece);
-    } else if (selectedPieces.length === 1) {
-        // Second piece selection
-        if (selectedPiece !== selectedPieces[0]) {
-            selectedPieces.push(selectedPiece);
-            swapPieces(selectedPieces[0], selectedPieces[1]);
-            checkPuzzleCompletion();
-            
-            // Reset selections
-            selectedPieces.forEach(piece => piece.classList.remove('selected'));
-            selectedPieces = [];
-        } else {
-            // Deselect if tapping the same piece
-            selectedPiece.classList.remove('selected');
-            selectedPieces = [];
-        }
+function touchMove(e) {
+    e.preventDefault(); // Prevent scrolling while dragging
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+    draggedPiece.style.transform = `translate(${deltaX}px, ${deltaY}px)`; // Move the piece
+}
+
+function touchEnd(e) {
+    draggedPiece.style.transform = ''; // Reset position after touch ends
+    const touch = e.changedTouches[0];
+    targetPiece = document.elementFromPoint(touch.clientX, touch.clientY); // Identify the drop target
+    
+    // Fallback to bounding rectangle overlap check if targetPiece is invalid or undefined
+    if (!targetPiece || !targetPiece.classList.contains('puzzle-piece')) {
+        const allPieces = document.querySelectorAll('.puzzle-piece');
+        allPieces.forEach(piece => {
+            const pieceRect = piece.getBoundingClientRect();
+            const touchX = touch.clientX;
+            const touchY = touch.clientY;
+
+            if (
+                touchX >= pieceRect.left &&
+                touchX <= pieceRect.right &&
+                touchY >= pieceRect.top &&
+                touchY <= pieceRect.bottom &&
+                piece !== draggedPiece
+            ) {
+                targetPiece = piece;
+            }
+        });
+    }
+
+    // Ensure targetPiece is valid and perform the swap
+    if (targetPiece && targetPiece !== draggedPiece && targetPiece.classList.contains('puzzle-piece')) {
+        swapPieces(draggedPiece, targetPiece);
+        checkPuzzleCompletion();
+    } else {
+        // If no valid targetPiece, reset the dragged piece to its original position
+        draggedPiece.style.transform = 'none';
     }
 }
 
-function swapPieces(piece1, piece2) {
-    const tempBackground = piece1.style.backgroundPosition;
-    piece1.style.backgroundPosition = piece2.style.backgroundPosition;
-    piece2.style.backgroundPosition = tempBackground;
+function swapPieces(draggedPiece, targetPiece) {
+    const draggedStyle = window.getComputedStyle(draggedPiece).backgroundPosition;
+    const targetStyle = window.getComputedStyle(targetPiece).backgroundPosition;
+
+    // Swap background positions
+    draggedPiece.style.backgroundPosition = targetStyle;
+    targetPiece.style.backgroundPosition = draggedStyle;
+
     savePuzzleState();
 }
 
@@ -164,8 +190,8 @@ function checkPuzzleCompletion() {
     let solved = true;
 
     pieces.forEach((piece, index) => {
-        const correctPositionX = (index % Math.sqrt(currentLevel)) * 100 / (Math.sqrt(currentLevel) - 1);
-        const correctPositionY = Math.floor(index / Math.sqrt(currentLevel)) * 100 / (Math.sqrt(currentLevel) - 1);
+        const correctPositionX = (index % currentLevel) * 100 / (currentLevel - 1);
+        const correctPositionY = Math.floor(index / currentLevel) * 100 / (currentLevel - 1);
         
         const [pieceX, pieceY] = window.getComputedStyle(piece).backgroundPosition.split(' ').map(val => parseFloat(val));
         
@@ -200,10 +226,10 @@ function displayModal() {
 
     nextLevelButton.onclick = () => {
         modal.style.display = 'none';
-        if (currentLevel === 25) {
-            setupPuzzle(49); // Move to medium
-        } else if (currentLevel === 49) {
-            setupPuzzle(100); // Move to hard
+        if (currentLevel === 10) {
+            setupPuzzle(12); // Move to medium
+        } else if (currentLevel === 12) {
+            setupPuzzle(16); // Move to hard
         }
     };
 
@@ -216,9 +242,9 @@ function displayModal() {
 
 function getLevelName(level) {
     switch(level) {
-        case 25: return "Easy";
-        case 49: return "Medium";
-        case 100: return "Hard";
+        case 10: return "Easy";
+        case 12: return "Medium";
+        case 16: return "Hard";
         default: return "Unknown";
     }
 }
@@ -260,3 +286,31 @@ function solvePuzzle() {
     pieces.forEach(piece => puzzleContainer.appendChild(piece));
     checkPuzzleCompletion();
 }
+
+// Adding an event listener for the submit button
+document.getElementById('submit').addEventListener('click', checkPuzzleArrangement);
+
+function checkPuzzleArrangement() {
+    const pieces = [...puzzleContainer.children];
+    let isCorrect = true;
+
+    pieces.forEach((piece, index) => {
+        // Calculate correct positions based on grid size
+        const correctPositionX = (index % (currentLevel === 10 ? 5 : currentLevel === 12 ? 7 : 9)) * 100 / ((currentLevel === 10 ? 5 : currentLevel === 12 ? 7 : 9) - 1);
+        const correctPositionY = Math.floor(index / (currentLevel === 10 ? 5 : currentLevel === 12 ? 7 : 9)) * 100 / ((currentLevel === 10 ? 5 : currentLevel === 12 ? 7 : 9) - 1);
+        
+        const [pieceX, pieceY] = window.getComputedStyle(piece).backgroundPosition.split(' ').map(val => parseFloat(val));
+        
+        // Check if the piece is in the correct position with a small margin of error
+        if (Math.abs(pieceX - correctPositionX) > 0.1 || Math.abs(pieceY - correctPositionY) > 0.1) {
+            isCorrect = false;
+        }
+    });
+
+    if (isCorrect) {
+        alert("Congratulations! The puzzle has been correctly arranged.");
+    } else {
+        alert("The puzzle is not arranged correctly. Please try again.");
+    }
+}
+
