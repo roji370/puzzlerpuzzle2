@@ -165,3 +165,30 @@ h1 {
     cursor: not-allowed; /* Match disabled cursor */
 }
 
+#next-level {
+    font-family: 'Bebas Neue', sans-serif; /* Match font */
+    margin: 10px; /* Match margin */
+    padding: 15px 30px; /* Match padding */
+    font-size: 30px; /* Match font size */
+    cursor: pointer; /* Match cursor */
+    border: none; /* Match border */
+    border-radius: 5px; /* Match border radius */
+    background-color: #00ff00; /* Match background color */
+    color: black; /* Match text color */
+    transition: background-color 0.3s, transform 0.2s; /* Match transition */
+}
+
+#next-level:hover:not(:disabled) {
+    background-color: #00cc00; /* Match hover color */
+    transform: scale(1.05); /* Match hover scale */
+}
+
+#next-level:active:not(:disabled) {
+    transform: scale(0.95); /* Match active scale */
+}
+
+#next-level:disabled {
+    opacity: 0.5; /* Match disabled opacity */
+    cursor: not-allowed; /* Match disabled cursor */
+}
+
