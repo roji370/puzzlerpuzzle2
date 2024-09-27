@@ -226,12 +226,21 @@ function displayModal() {
 
     nextLevelButton.onclick = () => {
         modal.style.display = 'none';
-        if (currentLevel === 10) {
-            setupPuzzle(12); // Move to medium
-        } else if (currentLevel === 12) {
-            setupPuzzle(16); // Move to hard
+    
+        if (currentLevel === 10 && !completedLevels.has(12)) {
+            completedLevels.add(12); // Unlock Medium level
+            setupPuzzle(12); // Move to Medium level
+        } else if (currentLevel === 12 && !completedLevels.has(16)) {
+            completedLevels.add(16); // Unlock Hard level
+            setupPuzzle(16); // Move to Hard level
+        } else {
+            modal.style.display = 'none'; // Close modal if no more levels
         }
+    
+        saveCompletedLevels(); // Save the newly completed levels
+        updateButtonStates(); // Update button states after unlocking
     };
+    
 
     window.onclick = (event) => {
         if (event.target === modal) {
@@ -239,6 +248,7 @@ function displayModal() {
         }
     };
 }
+
 
 function getLevelName(level) {
     switch(level) {
