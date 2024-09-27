@@ -5,21 +5,21 @@ const mediumButton = document.getElementById('medium');
 const hardButton = document.getElementById('hard');
 const solveButton = document.getElementById('solve');
 
-let currentLevel = 10;  // Start with the easy level
+let currentLevel = 25;  // Start with the easy level (5x5)
 let puzzleState = [];
 let startTime, intervalId;
 let completedLevels = new Set();
 
 const levelImages = {
-    10: 'images/easy-puzzle.jpg',
-    12: 'images/medium-puzzle.jpg',
-    16: 'images/hard-puzzle.jpg'
+    25: 'images/easy-puzzle.jpg',   // 5x5
+    49: 'images/medium-puzzle.jpg',  // 7x7
+    100: 'images/hard-puzzle.jpg'    // 10x10
 };
 
 window.onload = () => {
-    easyButton.addEventListener('click', () => setupPuzzle(10));
-    mediumButton.addEventListener('click', () => setupPuzzle(12));
-    hardButton.addEventListener('click', () => setupPuzzle(16));
+    easyButton.addEventListener('click', () => setupPuzzle(25));
+    mediumButton.addEventListener('click', () => setupPuzzle(49));
+    hardButton.addEventListener('click', () => setupPuzzle(100));
     document.getElementById('reset').addEventListener('click', resetPuzzle);
     solveButton.addEventListener('click', solvePuzzle);
 
@@ -42,8 +42,8 @@ function saveCompletedLevels() {
 }
 
 function updateButtonStates() {
-    mediumButton.disabled = !completedLevels.has(10);
-    hardButton.disabled = !completedLevels.has(12);
+    mediumButton.disabled = !completedLevels.has(25);
+    hardButton.disabled = !completedLevels.has(49);
     
     // Hide lock icons if levels are unlocked
     document.querySelector('.lock-icon.medium').style.display = mediumButton.disabled ? 'inline-block' : 'none';
@@ -59,7 +59,7 @@ function createPuzzle(level) {
     puzzleContainer.innerHTML = '';
 
     // Set up grid layout based on the level
-    const gridSize = level === 10 ? 10 : (level === 12 ? 12 : 16);
+    const gridSize = level === 25 ? 5 : (level === 49 ? 7 : 10);  // Adjust grid size based on level
     puzzleContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
     puzzleContainer.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
 
@@ -164,8 +164,8 @@ function checkPuzzleCompletion() {
     let solved = true;
 
     pieces.forEach((piece, index) => {
-        const correctPositionX = (index % currentLevel) * 100 / (currentLevel - 1);
-        const correctPositionY = Math.floor(index / currentLevel) * 100 / (currentLevel - 1);
+        const correctPositionX = (index % Math.sqrt(currentLevel)) * 100 / (Math.sqrt(currentLevel) - 1);
+        const correctPositionY = Math.floor(index / Math.sqrt(currentLevel)) * 100 / (Math.sqrt(currentLevel) - 1);
         
         const [pieceX, pieceY] = window.getComputedStyle(piece).backgroundPosition.split(' ').map(val => parseFloat(val));
         
@@ -200,10 +200,10 @@ function displayModal() {
 
     nextLevelButton.onclick = () => {
         modal.style.display = 'none';
-        if (currentLevel === 10) {
-            setupPuzzle(12); // Move to medium
-        } else if (currentLevel === 12) {
-            setupPuzzle(16); // Move to hard
+        if (currentLevel === 25) {
+            setupPuzzle(49); // Move to medium
+        } else if (currentLevel === 49) {
+            setupPuzzle(100); // Move to hard
         }
     };
 
@@ -216,9 +216,9 @@ function displayModal() {
 
 function getLevelName(level) {
     switch(level) {
-        case 10: return "Easy";
-        case 12: return "Medium";
-        case 16: return "Hard";
+        case 25: return "Easy";
+        case 49: return "Medium";
+        case 100: return "Hard";
         default: return "Unknown";
     }
 }
