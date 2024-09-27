@@ -3,44 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puzzler</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Treasure Hunt Puzzle</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Favicon -->
-    <link rel="icon" href="images/logo/puzzler.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <img src="images/logo/puzzler.png" alt="Treasure Hunt Puzzle Logo" class="logo">
-        <div id="timer">Time: 00:00</div>
-        <div class="level-select">
-            <button id="easy" class="level-button">Easy</button>
-            <button id="medium" class="level-button" disabled>
-                Medium
-                <i class="lock-icon medium fas fa-lock"></i>
-            </button>
-            <button id="hard" class="level-button" disabled>
-                Hard
-                <i class="lock-icon hard fas fa-lock"></i>
-            </button>
-        </div>
         
+        <div id="timer">Time: 00:00</div>
+
+        <div class="level-select">
+            <button class="level-button" id="easy">Easy</button>
+            <button class="level-button" id="medium">Medium <span class="lock-icon">🔒</span></button>
+            <button class="level-button" id="hard">Hard <span class="lock-icon">🔒</span></button>
+        </div>
+
         <div id="puzzle-container"></div>
+
         <div class="button-center">
-            <button id="reset" class="level-button">Reset Puzzle</button>
-            <button id="submit" class="level-button">Submit Puzzle</button>
+            <button id="reset">Reset Puzzle</button>
+            <button id="submit-puzzle">Submit Puzzle</button>
         </div>
     </div>
 
-    <!-- Modal Popup -->
     <div id="congrats-modal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Congratulations!</h2>
-            <p id="modal-message">You've solved the puzzle! The next level has been unlocked.</p>
-            <button id="next-level" class="level-button">Next Level</button>
+            <p>You've solved the puzzle! The next level has been unlocked.</p>
+            <button id="next-level">Next Level</button>
         </div>
     </div>
 

@@ -1,5 +1,5 @@
 body {
-    font-family: 'Bebas Neue', sans-serif; /* Set to Bebas Neue for all text */
+    font-family: 'Bebas Neue', sans-serif;
     text-align: center;
     background-color: #000000;
     margin: 0;
@@ -8,45 +8,50 @@ body {
 
 .container {
     padding: 20px;
-    max-width: 1200px; /* Set a max width for the container */
-    margin: auto; /* Center the container */
+    max-width: 1200px;
+    margin: auto;
 }
 
 h1 {
     margin-top: 20px;
-    font-size: 36px; /* Adjust size as needed */
-    color: #ffffff; /* Text color for contrast */
+    font-size: 36px;
+    color: #ffffff;
 }
 
 .level-select {
     display: flex;
-    justify-content: center; /* Center buttons */
-    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-    margin: 20px 0; /* Add margin around the button container */
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px 0;
 }
 
 .level-button {
     font-family: 'Bebas Neue', sans-serif;
-    margin: 10px; /* Adjust margin for more spacing */
-    padding: 15px 30px; /* Increased padding for a better touch target */
-    font-size: 30px; /* Adjust font size */
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 30px;
     cursor: pointer;
-    border: none; /* Remove default border */
-    border-radius: 5px; /* Rounded corners */
-    background-color: #00ff00; /* Main accent color */
-    color: black; /* Use black for text for better contrast */
-    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
-    display: flex; /* Enable flex for alignment */
-    align-items: center; /* Center align items vertically */
+    border: none;
+    border-radius: 5px;
+    background-color: #00ff00;
+    color: black;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
 }
 
-.level-button:hover {
-    background-color: #00cc00; /* Darker shade on hover */
-    transform: scale(1.05); /* Slightly enlarge button */
+.level-button:hover:not(:disabled) {
+    background-color: #00cc00;
+    transform: scale(1.05);
 }
 
-.level-button:active {
-    transform: scale(0.95); /* Slightly shrink button when clicked */
+.level-button:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.level-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 #puzzle-container {
@@ -54,11 +59,11 @@ h1 {
     display: grid;
     gap: 2px;
     background-color: #ddd;
-    max-width: 90vw; /* Responsive width */
-    max-height: 90vw; /* Responsive height */
-    aspect-ratio: 1 / 1; /* Maintain aspect ratio */
+    max-width: 90vw;
+    max-height: 90vw;
+    aspect-ratio: 1 / 1;
     border: 2px solid #333;
-    position: relative; /* Added for responsive behavior */
+    position: relative;
 }
 
 .puzzle-piece {
@@ -67,18 +72,17 @@ h1 {
     border: 1px solid #999;
     box-sizing: border-box;
     cursor: pointer;
-    background-size: cover; /* Ensure full coverage of each piece */
-    background-position: center; /* Center each puzzle piece */
-    display: block; /* Ensure the piece takes up full grid space */
-    transition: transform 0.2s ease, background-position 0.2s ease; /* For smooth movement */
-    touch-action: manipulation; /* Improves touch performance */
+    background-size: cover;
+    background-position: center;
+    display: block;
+    transition: transform 0.2s ease, background-position 0.2s ease;
+    touch-action: manipulation;
 }
 
 .puzzle-piece:active {
-    transform: scale(1.1); /* Slight enlarge on click/touch */
+    transform: scale(1.1);
 }
 
-/* Modal Styling */
 .modal {
     display: none;
     position: fixed;
@@ -97,7 +101,7 @@ h1 {
     padding: 20px;
     border-radius: 10px;
     width: 80%;
-    max-width: 500px; /* Responsive modal width */
+    max-width: 500px;
     text-align: center;
 }
 
@@ -114,108 +118,50 @@ h1 {
 
 .logo {
     display: block;
-    margin: 20px auto; /* Center the logo */
-    width: 60px; /* Set a smaller base width for mobile */
-    max-width: 100%; /* Ensure it doesn't exceed the container width */
-    height: auto; /* Maintain aspect ratio */
+    margin: 20px auto;
+    width: 60px;
+    max-width: 100%;
+    height: auto;
 }
 
 .lock-icon {
-    margin-left: 5px; /* Space between the text and the icon */
-    color: #000000; /* Color for the lock icon */
-    font-size: 20px; /* Size of the icon */
-    display: inline; /* Ensure the icon is inline */
-    vertical-align: middle; /* Align the icon vertically with the text */
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 28px; /* Smaller font size for headers */
-    }
-
-    .level-button {
-        font-size: 18px; /* Adjust button font size for smaller screens */
-        padding: 10px 20px; /* Adjust padding for smaller screens */
-    }
-
-    .logo {
-        width: 50%; /* Adjust logo size for smaller screens */
-        max-width: 100px; /* Set a max width to prevent it from getting too big */
-    }
-
-    #puzzle-container {
-        max-width: 95vw; /* Further adjust width for smaller screens */
-        max-height: 95vw; /* Further adjust height for smaller screens */
-    }
-
-    .puzzle-piece {
-        border: 1px solid #888; /* Slightly thinner borders on smaller screens */
-    }
-}
-
-@media (max-width: 480px) {
-    h1 {
-        font-size: 24px; /* Further adjust header size for mobile */
-    }
-
-    .level-button {
-        font-size: 16px; /* Smaller button font size for very small screens */
-        padding: 10px 15px; /* Further adjust padding */
-    }
-
-    .lock-icon {
-        font-size: 18px; /* Adjust lock icon size */
-    }
-
-    #puzzle-container {
-        max-width: 98vw; /* Nearly full width on mobile */
-        max-height: 98vw; /* Adjust for smaller devices */
-    }
+    margin-left: 5px;
+    color: #000000;
+    font-size: 20px;
+    display: inline;
+    vertical-align: middle;
 }
 
 .button-center {
-    display: flex; /* Use flexbox for centering */
-    justify-content: center; /* Center horizontally */
-    margin: 20px 0; /* Optional: Add some margin for spacing */
-}
-#next-level {
-    margin: 15px auto; /* Center the button with automatic margins */
-    display: block; /* Ensures it behaves as a block element */
-    padding: 15px 30px; /* Maintain padding for aesthetics */
-    font-size: 30px; /* Set font size */
-    background-color: #00ff00; /* Maintain existing background color */
-    color: black; /* Text color */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
 }
 
-#next-level:hover {
-    background-color: #00cc00; /* Darker shade on hover */
-    transform: scale(1.05); /* Scale effect on hover */
+#reset, #submit-puzzle {
+    font-family: 'Bebas Neue', sans-serif; /* Match font */
+    margin: 10px; /* Match margin */
+    padding: 15px 30px; /* Match padding */
+    font-size: 30px; /* Match font size */
+    cursor: pointer; /* Match cursor */
+    border: none; /* Match border */
+    border-radius: 5px; /* Match border radius */
+    background-color: #00ff00; /* Match background color */
+    color: black; /* Match text color */
+    transition: background-color 0.3s, transform 0.2s; /* Match transition */
 }
 
-#next-level:active {
-    transform: scale(0.95); /* Slightly smaller when clicked */
-}
-@media (max-width: 768px) {
-    #next-level {
-        font-size: 24px; /* Adjust font size for tablet screens */
-        padding: 10px 20px; /* Adjust padding for smaller screens */
-    }
+#reset:hover:not(:disabled), #submit-puzzle:hover:not(:disabled) {
+    background-color: #00cc00; /* Match hover color */
+    transform: scale(1.05); /* Match hover scale */
 }
 
-@media (max-width: 480px) {
-    #next-level {
-        font-size: 20px; /* Further adjust font size for mobile screens */
-        padding: 8px 15px; /* Smaller padding for mobile */
-        width: 90%; /* Use 90% width to ensure it fits */
-    }
+#reset:active:not(:disabled), #submit-puzzle:active:not(:disabled) {
+    transform: scale(0.95); /* Match active scale */
 }
 
-.puzzle-piece.selected {
-    border: 2px solid yellow;
-    box-shadow: 0 0 10px yellow;
+#reset:disabled, #submit-puzzle:disabled {
+    opacity: 0.5; /* Match disabled opacity */
+    cursor: not-allowed; /* Match disabled cursor */
 }
+
